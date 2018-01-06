@@ -1,0 +1,94 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+    
+    //main method
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int num_count = sc.nextInt();
+        Map<Integer,Integer> mp = new HashMap<Integer, Integer>();
+        if(num_count > 0){
+            int[] nums = new int[num_count];
+            float sum = 0;
+            for(int i=0; i<num_count; i++){
+                nums[i] = sc.nextInt();
+                
+                sum += nums[i]; //sums result for mean
+
+                if(mp.get(nums[i]) == null){
+                    mp.put(nums[i], 1);
+                } else {
+                    int cur = mp.get(nums[i]);
+                    mp.remove(nums[i]);
+                    mp.put(nums[i], ++cur);
+                    
+                }
+            }
+        calculateMean(sum, num_count);
+        calculateMedian(nums);
+        calculateMode(mp); 
+        }       
+    }
+    
+    
+    //calculates mean
+    public static void calculateMean(float sum, int num_count){
+        float mean = sum/num_count;
+        System.out.printf("%.1f\n", mean);
+    }
+    
+    
+    //sorts array
+    public static int[] sort(int[] nums){
+        boolean swappedFlag = true;
+        int i = nums.length-1;
+        while(swappedFlag && i>0){
+            swappedFlag = false;
+            for(int j=0; j<i; j++){
+                if(nums[j] > nums[j+1]){
+                    int tmp = nums[j];
+                    nums[j] = nums[j+1];
+                    nums[j+1] = tmp;
+                    swappedFlag = true;
+                }
+            }
+            i--;
+        }
+        return nums;
+    }
+    
+    
+    //calculates median
+    public static void calculateMedian(int[] nums){
+        nums = sort(nums);
+        float median = 0;
+        if(nums.length%2 == 0){
+            median = ((float)(nums[(nums.length/2)-1] + nums[(nums.length/2)]))/2;
+        } else {
+            median = nums[nums.length/2];
+        }
+        System.out.printf("%.1f\n", median);
+    }
+    
+    
+    //calculates mode
+    public static void calculateMode(Map<Integer,Integer> mp){
+        int highest_val = 0;
+        int median = 100000;//max possible input given in constraints
+        Set set = mp.entrySet();
+        Iterator iter = set.iterator();
+        while(iter.hasNext()){
+            Map.Entry me = (Map.Entry)iter.next();
+            int val = (Integer)me.getValue();
+            int key = (Integer)me.getKey();
+            if(val > highest_val){ 
+                highest_val = val;
+                median = key;
+            } else if(val == highest_val && key < median){
+                median = key; 
+            }            
+        }
+        System.out.println(median);
+    }
+}
